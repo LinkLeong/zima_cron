@@ -35,7 +35,7 @@ jobs:
 
       - name: Package RAW
         run: |
-          mksquashfs raw/ zimaos_cron.raw -noappend -comp xz
+          mksquashfs raw/ zimaos_cron.raw -noappend -comp gzip
           ls -lh zimaos_cron.raw
 
       - name: Upload artifact
