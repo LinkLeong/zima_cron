@@ -7,7 +7,6 @@ import (
 	"math"
 	"net"
 	"net/http"
-	"os"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -15,6 +14,7 @@ import (
 	"time"
 
 	"github.com/IceWhaleTech/CasaOS-Common/model"
+	conf "github.com/LinkLeong/zima_cron/internal/config"
 	svc "github.com/LinkLeong/zima_cron/internal/service"
 )
 
@@ -51,11 +51,7 @@ var (
 )
 
 func main() {
-	runtimePath := os.Getenv("CASAOS_RUNTIME_DIR")
-	if runtimePath == "" {
-		runtimePath = "/var/lib/casaos"
-	}
-	svc.Initialize(runtimePath)
+	svc.Initialize(conf.CommonInfo.RuntimePath)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/tasks", withCORS(tasksHandler))
 	mux.HandleFunc("/tasks/", withCORS(taskActionHandler))
