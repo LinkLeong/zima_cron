@@ -53,8 +53,8 @@ var (
 func main() {
 	svc.Initialize(conf.CommonInfo.RuntimePath)
 	mux := http.NewServeMux()
-	mux.HandleFunc("/tasks", withCORS(tasksHandler))
-	mux.HandleFunc("/tasks/", withCORS(taskActionHandler))
+	mux.HandleFunc("/zimaos_cron/tasks", withCORS(tasksHandler))
+	mux.HandleFunc("/zimaos_cron/tasks/", withCORS(taskActionHandler))
 	listener, err := net.Listen("tcp", net.JoinHostPort("127.0.0.1", "0"))
 	if err != nil {
 		log.Fatal(err)
