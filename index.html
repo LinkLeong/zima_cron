@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>定时管理器</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>定时管理器</h1>
+    </header>
+    <main class="app-main">
+      <section class="content">
+        <div class="card">
+          <div class="list-header">
+            <h2>任务列表</h2>
+            <div class="list-actions">
+              <button id="runAllBtn">全部运行一次</button>
+              <button id="openCreateModalBtn" class="primary">新建任务</button>
+            </div>
+          </div>
+          <table class="tasks-table">
+            <thead>
+              <tr>
+                <th>名称</th>
+                <th>命令</th>
+                <th>状态</th>
+                <th>下次执行</th>
+                <th>上次结果</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="taskTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <div class="modal-overlay" id="createTaskModal">
+      <div class="modal">
+        <h3>创建任务</h3>
+        <div class="form-row">
+          <label for="taskNameInput">任务名称</label>
+          <input id="taskNameInput" type="text" placeholder="例如：每日备份">
+        </div>
+        <div class="form-row">
+          <label for="commandInput">执行命令</label>
+          <textarea id="commandInput" rows="3" placeholder="例如：bash /path/to/script.sh"></textarea>
+        </div>
+        <div class="form-row">
+          <label for="scheduleTypeSelect">计划类型</label>
+          <select id="scheduleTypeSelect">
+            <option value="interval">间隔分钟</option>
+            <option value="cron">cron 表达式</option>
+          </select>
+        </div>
+        <div class="form-row" id="rowInterval">
+          <label for="intervalInput">执行间隔（分钟）</label>
+          <input id="intervalInput" type="number" min="1" step="1" placeholder="例如：60">
+        </div>
+        <div class="form-row hidden" id="rowCron">
+          <label for="cronInput">cron 表达式</label>
+          <input id="cronInput" type="text" placeholder="例如：*/5 * * * *">
+        </div>
+        <div class="modal-actions">
+          <button id="cancelCreateBtn">取消</button>
+          <button id="createTaskBtn" class="primary">创建</button>
+        </div>
+      </div>
+    </div>
+    <script src="app.js"></script>
+  </body>
+  </html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title data-i18n="title">定时管理器</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <h1 data-i18n="header">定时管理器</h1>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+        <label class="muted" for="langSelect" data-i18n="lang">语言</label>
+        <select id="langSelect">
+          <option value="zh">中文</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+    </header>
+    <main class="app-main">
+      <section class="content">
+        <div class="card">
+          <div class="list-header">
+            <h2 data-i18n="taskList">任务列表</h2>
+            <div class="list-actions">
+              <button id="runAllBtn" data-i18n="runAll">全部运行一次</button>
+              <button id="openCreateModalBtn" class="primary" data-i18n="newTask">新建任务</button>
+            </div>
+          </div>
+          <table class="tasks-table">
+            <thead>
+              <tr>
+                <th data-i18n="colName">名称</th>
+                <th data-i18n="colCmd">命令</th>
+                <th data-i18n="colStatus">状态</th>
+                <th data-i18n="colNext">下次执行</th>
+                <th data-i18n="colLast">上次结果</th>
+                <th data-i18n="colActions">操作</th>
+              </tr>
+            </thead>
+            <tbody id="taskTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <div class="modal-overlay" id="createTaskModal">
+      <div class="modal">
+        <h3 data-i18n="createTitle">创建任务</h3>
+        <div class="form-row">
+          <label for="taskNameInput" data-i18n="name">任务名称</label>
+          <input id="taskNameInput" type="text" placeholder="例如：每日备份" data-i18n-ph="phName">
+        </div>
+        <div class="form-row">
+          <label for="commandInput" data-i18n="cmd">执行命令</label>
+          <textarea id="commandInput" rows="3" placeholder="例如：bash /path/to/script.sh" data-i18n-ph="phCmd"></textarea>
+        </div>
+        <div class="form-row">
+          <label for="scheduleTypeSelect" data-i18n="plan">计划类型</label>
+          <select id="scheduleTypeSelect">
+            <option value="interval" data-i18n-opt="optInterval">间隔分钟</option>
+            <option value="cron" data-i18n-opt="optCron">cron 表达式</option>
+          </select>
+        </div>
+        <div class="form-row" id="rowInterval">
+          <label for="intervalInput" data-i18n="interval">执行间隔（分钟）</label>
+          <input id="intervalInput" type="number" min="1" step="1" placeholder="例如：60" data-i18n-ph="phInterval">
+        </div>
+        <div class="form-row hidden" id="rowCron">
+          <label for="cronInput" data-i18n="cron">cron 表达式</label>
+          <input id="cronInput" type="text" placeholder="例如：*/5 * * * *" data-i18n-ph="phCron">
+        </div>
+        <div class="modal-actions">
+          <button id="cancelCreateBtn" data-i18n="cancel">取消</button>
+          <button id="createTaskBtn" class="primary" data-i18n="create">创建</button>
+        </div>
+      </div>
+    </div>
+    <script>window.API_BASE='http://127.0.0.1:8989'</script>
+    <script src="app.js"></script>
+  </body>
+  </html>
