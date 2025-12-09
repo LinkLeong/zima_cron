@@ -4,9 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-  create:
-    tags:
-      - 'v*'
   release:
     types: [published]
   workflow_dispatch:
@@ -44,26 +41,20 @@ jobs:
           name: zimaos_cron.raw
           path: zimaos_cron.raw
 
-      - name: Get version
-        id: get_version
-        env:
-          VERSION: ${{ github.ref_name || github.event.release.tag_name }}
+      - name: Get version (push/dispatch)
+        id: get_version_push
+        if: ${{ github.event_name != 'release' }}
         run: |
-          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+          echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
 
-      - name: Update release (PAT)
-        if: ${{ secrets.CICD_GITHUB_TOKEN != '' }}
-        uses: zhanghengxin/git-release-private@ice
-        with:
-          token: ${{ secrets.CICD_GITHUB_TOKEN }}
-          allow_override: true
-          gzip: false
-          tag: ${{ steps.get_version.outputs.VERSION }}
-          files: ./zimaos_cron.raw
+      - name: Get version (release)
+        id: get_version_release
+        if: ${{ github.event_name == 'release' }}
+        run: |
+          echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
 
-      - name: Update release (GITHUB_TOKEN fallback)
-        if: ${{ secrets.CICD_GITHUB_TOKEN == '' }}
+      - name: Update release
         uses: softprops/action-gh-release@v1
         with:
           files: ./zimaos_cron.raw
-          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          tag_name: ${{ steps.get_version_push.outputs.VERSION || steps.get_version_release.outputs.VERSION }}
