@@ -59,7 +59,7 @@ curl -s http://localhost:8989/api/tasks/{id}/logs
 ## RAW 打包与发布
 - 手动打包：
   ```bash
-  mksquashfs raw/ zimaos_cron.raw --no-append -comp xz
+  mksquashfs raw/ zimaos_cron.raw -noappend -comp xz
   ```
 - GitHub Actions：见 `.github/workflows/release-raw.yml`
   - 构建二进制：`GOOS=linux GOARCH=amd64 go build -o ./raw/usr/bin/zimaos-cron ./cmd/zimaos-cron`
@@ -76,4 +76,3 @@ curl -s http://localhost:8989/api/tasks/{id}/logs
 
 ## 许可证
 MIT（如需调整请在根目录替换许可证文件）
-
