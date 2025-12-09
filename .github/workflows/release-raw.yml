@@ -4,6 +4,11 @@ on:
   push:
     tags:
       - 'v*'
+  create:
+    tags:
+      - 'v*'
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -41,8 +46,10 @@ jobs:
 
       - name: Get version
         id: get_version
+        env:
+          VERSION: ${{ github.ref_name || github.event.release.tag_name }}
         run: |
-          echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Update release (PAT)
         if: ${{ secrets.CICD_GITHUB_TOKEN != '' }}
