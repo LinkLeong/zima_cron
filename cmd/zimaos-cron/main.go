@@ -5,12 +5,17 @@ import (
 	"encoding/json"
 	"log"
 	"math"
+	"net"
 	"net/http"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/IceWhaleTech/CasaOS-Common/model"
+	svc "github.com/LinkLeong/zima_cron/internal/service"
 )
 
 type Task struct {
@@ -46,12 +51,26 @@ var (
 )
 
 func main() {
+	runtimePath := os.Getenv("CASAOS_RUNTIME_DIR")
+	if runtimePath == "" {
+		runtimePath = "/var/lib/casaos"
+	}
+	svc.Initialize(runtimePath)
 	mux := http.NewServeMux()
-	mux.HandleFunc("/api/tasks", withCORS(tasksHandler))
-	mux.HandleFunc("/api/tasks/", withCORS(taskActionHandler))
-	srv := &http.Server{Addr: ":8989", Handler: mux}
-	log.Println("zimaos-cron backend listening on :8989")
-	if err := srv.ListenAndServe(); err != nil {
+	mux.HandleFunc("/tasks", withCORS(tasksHandler))
+	mux.HandleFunc("/tasks/", withCORS(taskActionHandler))
+	listener, err := net.Listen("tcp", net.JoinHostPort("127.0.0.1", "0"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	if svc.Gateway != nil {
+		if err := svc.Gateway.CreateRoute(&model.Route{Path: "/zimaos_cron", Target: "http://" + listener.Addr().String()}); err != nil {
+			log.Fatal(err)
+		}
+	}
+	srv := &http.Server{Handler: mux, ReadHeaderTimeout: 5 * time.Second}
+	log.Printf("zimaos-cron backend listening on http://%s", listener.Addr().String())
+	if err := srv.Serve(listener); err != nil {
 		log.Fatal(err)
 	}
 }

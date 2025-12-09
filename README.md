@@ -28,25 +28,26 @@
   http://localhost:8000/raw/usr/share/casaos/www/modules/zimaos_cron/index.html
   ```
 
-## HTTP API
-- 列出任务：`GET /api/tasks`
-- 创建任务：`POST /api/tasks`
+## HTTP API（CasaOS 路由前缀）
+- 路由前缀：`/zimaos_cron`
+- 列出任务：`GET /zimaos_cron/tasks`
+- 创建任务：`POST /zimaos_cron/tasks`
   - Body：`{"name":"…","command":"…","type":"interval|cron","interval_min":60,"cron_expr":"*/5 * * * *"}`
-- 获取任务：`GET /api/tasks/{id}`
-- 运行一次：`POST /api/tasks/{id}/run`
-- 暂停/恢复：`POST /api/tasks/{id}/toggle`
-- 查看日志：`GET /api/tasks/{id}/logs`
-- 清空日志：`POST /api/tasks/{id}/logs/clear`
-- 删除任务：`DELETE /api/tasks/{id}`
+- 获取任务：`GET /zimaos_cron/tasks/{id}`
+- 运行一次：`POST /zimaos_cron/tasks/{id}/run`
+- 暂停/恢复：`POST /zimaos_cron/tasks/{id}/toggle`
+- 查看日志：`GET /zimaos_cron/tasks/{id}/logs`
+- 清空日志：`POST /zimaos_cron/tasks/{id}/logs/clear`
+- 删除任务：`DELETE /zimaos_cron/tasks/{id}`
 
 示例：
 ```bash
-curl -sX POST http://localhost:8989/api/tasks \
+curl -sX POST http://localhost:8989/zimaos_cron/tasks \
   -H 'Content-Type: application/json' \
   -d '{"name":"echo","command":"echo hello","type":"interval","interval_min":1}'
 
-curl -sX POST http://localhost:8989/api/tasks/{id}/run
-curl -s http://localhost:8989/api/tasks/{id}/logs
+curl -sX POST http://localhost:8989/zimaos_cron/tasks/{id}/run
+curl -s http://localhost:8989/zimaos_cron/tasks/{id}/logs
 ```
 
 ## 前端要点
@@ -67,7 +68,7 @@ curl -s http://localhost:8989/api/tasks/{id}/logs
 
 ## CasaOS 部署提示
 - 将 RAW 安装到 CasaOS 后，模块入口位置：`/modules/zimaos_cron/index.html`
-- 后端服务监听：`:8989`
+- 后端服务由平台随机端口监听，并通过网关路由前缀 `/zimaos_cron` 转发（前端同源调用）
 
 ## 行为与限制
 - 命令执行：`/bin/sh -lc`，超时 2 分钟
