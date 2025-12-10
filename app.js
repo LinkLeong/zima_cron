@@ -112,8 +112,8 @@ function renderTasks() {
   tasks.forEach(t => {
     const tr = document.createElement('tr')
     const statusDot = `<span class="dot ${t.status}"></span>`
-    const statusText = t.status === 'running' ? '运行中' : '已暂停'
-    const lastBadge = t.lastResult ? `<span class="result-badge"><span class="dot ${t.lastResult.success ? 'success' : 'fail'}"></span>${t.lastResult.success ? '成功' : '失败'}</span>` : '<span class="muted">-</span>'
+    const statusText = t.status === 'running' ? 'Running' : 'Paused'
+    const lastBadge = t.lastResult ? `<span class="result-badge"><span class="dot ${t.lastResult.success ? 'success' : 'fail'}"></span>${t.lastResult.success ? 'Success' : 'Fail'}</span>` : '<span class="muted">-</span>'
 
     tr.innerHTML = `
       <td>${t.name}</td>
@@ -122,9 +122,9 @@ function renderTasks() {
       <td>${fmtTime(t.nextRunAt)}</td>
       <td>${lastBadge}</td>
       <td class="actions">
-        <button data-action="run" data-id="${t.id}">运行一次</button>
-        <button data-action="toggle" data-id="${t.id}">${t.status === 'running' ? '暂停' : '恢复'}</button>
-        <button data-action="logs" data-id="${t.id}">${t.showLogs ? '隐藏日志' : '查看日志'}</button>
+        <button data-action="run" data-id="${t.id}">Run Once</button>
+        <button data-action="toggle" data-id="${t.id}">${t.status === 'running' ? 'Pause' : 'Resume'}</button>
+        <button data-action="logs" data-id="${t.id}">${t.showLogs ? 'Hide Logs' : 'Show Logs'}</button>
       </td>
     `
     tbody.appendChild(tr)
@@ -136,8 +136,8 @@ function renderTasks() {
       const header = document.createElement('div')
       header.className = 'logs-header'
       header.innerHTML = `
-        <div class="muted">日志 · ${t.name}</div>
-        <div class="list-actions"><button data-action="clear-logs" data-id="${t.id}">清空日志</button></div>
+        <div class="muted">Logs · ${t.name}</div>
+        <div class="list-actions"><button data-action="clear-logs" data-id="${t.id}">Clear Logs</button></div>
       `
       const list = document.createElement('div')
       list.className = 'logs-list'
@@ -148,7 +148,7 @@ function renderTasks() {
         item.innerHTML = `
           <div class="log-time">${fmtTime(l.time)}</div>
           <div>${escapeHtml(l.message)}</div>
-          <div class="log-status ${statusClass}">${l.success ? '成功' : '失败'}</div>
+          <div class="log-status ${statusClass}">${l.success ? 'Success' : 'Fail'}</div>
         `
         list.appendChild(item)
       })

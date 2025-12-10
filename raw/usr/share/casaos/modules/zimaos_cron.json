@@ -2,7 +2,7 @@
   "name": "zimaos_cron",
   "ui": {
     "name": "zimaos_cron",
-    "title": { "en_us": "Cron (zimaos_cron)", "zh_cn": "调度器（zimaos_cron）" },
+    "title": { "en_us": "Zima Cron", "zh_cn": "调度器" },
     "prefetch": true,
     "show": true,
     "entry": "/modules/zimaos_cron/index.html",
