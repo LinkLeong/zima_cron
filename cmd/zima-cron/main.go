@@ -65,7 +65,7 @@ func main() {
 		}
 	}
 	srv := &http.Server{Handler: mux, ReadHeaderTimeout: 5 * time.Second}
-	log.Printf("zimaos-cron backend listening on http://%s", listener.Addr().String())
+	log.Printf("zima-cron backend listening on http://%s", listener.Addr().String())
 	if err := srv.Serve(listener); err != nil {
 		log.Fatal(err)
 	}

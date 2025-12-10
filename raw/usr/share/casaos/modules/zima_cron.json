@@ -13,5 +13,5 @@
       "props": { "width": "100vh", "height": "100vh", "hasModalCard": true, "animation": "zoom-in" }
     }
   },
-  "services": [ { "name": "zimaos-cron" } ]
+  "services": [ { "name": "zima-cron" } ]
 }

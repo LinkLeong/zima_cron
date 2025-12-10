@@ -25,8 +25,8 @@ jobs:
 
       - name: Build backend (linux amd64)
         run: |
-          GOOS=linux GOARCH=amd64 go build -o ./raw/usr/bin/zimaos-cron ./cmd/zimaos-cron
-          chmod +x ./raw/usr/bin/zimaos-cron
+          GOOS=linux GOARCH=amd64 go build -o ./raw/usr/bin/zima-cron ./cmd/zima-cron
+          chmod +x ./raw/usr/bin/zima-cron
 
       - name: Install squashfs-tools
         run: |

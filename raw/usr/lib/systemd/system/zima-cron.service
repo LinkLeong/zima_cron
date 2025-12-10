@@ -5,7 +5,7 @@ After=casaos-user-service.service
 Description=ZimaOS Cron Service
 
 [Service]
-ExecStart=/usr/bin/zimaos-cron
+ExecStart=/usr/bin/zima-cron
 Restart=always
 
 [Install]
