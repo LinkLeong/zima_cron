@@ -165,14 +165,25 @@ function renderTasks() {
   tbody.querySelectorAll('button').forEach(btn => btn.addEventListener('click', onRowAction))
 }
 
-function onRowAction(e) {
+async function onRowAction(e) {
   const action = e.currentTarget.getAttribute('data-action')
   const id = e.currentTarget.getAttribute('data-id')
   const task = tasks.find(t => t.id === id)
   if (!task) return
   if (action === 'run') fetch(`${API_BASE}/zimaos_cron/tasks/${id}/run`, { method: 'POST' }).then(fetchTasks)
   if (action === 'toggle') fetch(`${API_BASE}/zimaos_cron/tasks/${id}/toggle`, { method: 'POST' }).then(fetchTasks)
-  if (action === 'logs') { task.showLogs = !task.showLogs; renderTasks() }
+  if (action === 'logs') {
+    task.showLogs = !task.showLogs
+    if (task.showLogs && !task.logs) {
+      try {
+        const lr = await fetch(`${API_BASE}/zimaos_cron/tasks/${id}/logs`)
+        task.logs = lr.ok ? await lr.json() : []
+      } catch (_) {
+        task.logs = []
+      }
+    }
+    renderTasks()
+  }
   if (action === 'clear-logs') { fetch(`${API_BASE}/zimaos_cron/tasks/${id}/logs/clear`, { method: 'POST' }).then(() => { task.logs = []; renderTasks() }) }
 }
 
@@ -286,11 +297,7 @@ function escapeHtml(str) { return str.replace(/[&<>"]/g, s => ({ '&': '&amp;', '
 async function fetchTasks() {
   const res = await fetch(`${API_BASE}/zimaos_cron/tasks`)
   const list = await res.json()
-  tasks = list.map(t => ({ ...t, showLogs: false }))
-  await Promise.all(tasks.map(async t => {
-    const lr = await fetch(`${API_BASE}/zimaos_cron/tasks/${t.id}/logs`)
-    t.logs = await lr.json()
-  }))
+  tasks = list.map(t => ({ ...t, showLogs: false, logs: undefined }))
   renderTasks()
 }
 

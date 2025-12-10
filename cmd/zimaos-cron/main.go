@@ -142,7 +142,7 @@ func tasksHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func taskActionHandler(w http.ResponseWriter, r *http.Request) {
-	path := strings.TrimPrefix(r.URL.Path, "/api/tasks/")
+	path := strings.TrimPrefix(r.URL.Path, "/zimaos_cron/tasks/")
 	parts := strings.Split(path, "/")
 	if len(parts) == 0 {
 		w.WriteHeader(404)
@@ -193,6 +193,9 @@ func taskActionHandler(w http.ResponseWriter, r *http.Request) {
 			mu.Lock()
 			logs := append([]LogEntry(nil), t.logs...)
 			mu.Unlock()
+			if logs == nil {
+				logs = []LogEntry{}
+			}
 			json.NewEncoder(w).Encode(logs)
 		} else if r.Method == http.MethodPost && len(parts) >= 3 && parts[2] == "clear" {
 			mu.Lock()
