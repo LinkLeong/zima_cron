@@ -53,14 +53,14 @@ var (
 func main() {
 	svc.Initialize(conf.CommonInfo.RuntimePath)
 	mux := http.NewServeMux()
-	mux.HandleFunc("/zimaos_cron/tasks", withCORS(tasksHandler))
-	mux.HandleFunc("/zimaos_cron/tasks/", withCORS(taskActionHandler))
+	mux.HandleFunc("/zima_cron/tasks", withCORS(tasksHandler))
+	mux.HandleFunc("/zima_cron/tasks/", withCORS(taskActionHandler))
 	listener, err := net.Listen("tcp", net.JoinHostPort("127.0.0.1", "0"))
 	if err != nil {
 		log.Fatal(err)
 	}
 	if svc.Gateway != nil {
-		if err := svc.Gateway.CreateRoute(&model.Route{Path: "/zimaos_cron", Target: "http://" + listener.Addr().String()}); err != nil {
+		if err := svc.Gateway.CreateRoute(&model.Route{Path: "/zima_cron", Target: "http://" + listener.Addr().String()}); err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -142,7 +142,7 @@ func tasksHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func taskActionHandler(w http.ResponseWriter, r *http.Request) {
-	path := strings.TrimPrefix(r.URL.Path, "/zimaos_cron/tasks/")
+	path := strings.TrimPrefix(r.URL.Path, "/zima_cron/tasks/")
 	parts := strings.Split(path, "/")
 	if len(parts) == 0 {
 		w.WriteHeader(404)

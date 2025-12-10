@@ -74,7 +74,7 @@ async function createTask() {
     if (!isValidCron(cronExpr)) return
   }
   const payload = { name, command, type: scheduleType, interval_min: intervalMin, cron_expr: cronExpr }
-  await fetch(`${API_BASE}/zimaos_cron/tasks`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+  await fetch(`${API_BASE}/zima_cron/tasks`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
   await fetchTasks()
   byId('taskNameInput').value = ''
   byId('commandInput').value = ''
@@ -170,13 +170,13 @@ async function onRowAction(e) {
   const id = e.currentTarget.getAttribute('data-id')
   const task = tasks.find(t => t.id === id)
   if (!task) return
-  if (action === 'run') fetch(`${API_BASE}/zimaos_cron/tasks/${id}/run`, { method: 'POST' }).then(fetchTasks)
-  if (action === 'toggle') fetch(`${API_BASE}/zimaos_cron/tasks/${id}/toggle`, { method: 'POST' }).then(fetchTasks)
+  if (action === 'run') fetch(`${API_BASE}/zima_cron/tasks/${id}/run`, { method: 'POST' }).then(fetchTasks)
+  if (action === 'toggle') fetch(`${API_BASE}/zima_cron/tasks/${id}/toggle`, { method: 'POST' }).then(fetchTasks)
   if (action === 'logs') {
     task.showLogs = !task.showLogs
     if (task.showLogs && !task.logs) {
       try {
-        const lr = await fetch(`${API_BASE}/zimaos_cron/tasks/${id}/logs`)
+        const lr = await fetch(`${API_BASE}/zima_cron/tasks/${id}/logs`)
         task.logs = lr.ok ? await lr.json() : []
       } catch (_) {
         task.logs = []
@@ -184,14 +184,14 @@ async function onRowAction(e) {
     }
     renderTasks()
   }
-  if (action === 'clear-logs') { fetch(`${API_BASE}/zimaos_cron/tasks/${id}/logs/clear`, { method: 'POST' }).then(() => { task.logs = []; renderTasks() }) }
+  if (action === 'clear-logs') { fetch(`${API_BASE}/zima_cron/tasks/${id}/logs/clear`, { method: 'POST' }).then(() => { task.logs = []; renderTasks() }) }
 }
 
 // backend handles toggle
 
 function runAllOnce() {
   const running = tasks.filter(t => t.status === 'running')
-  Promise.all(running.map(t => fetch(`${API_BASE}/zimaos_cron/tasks/${t.id}/run`, { method: 'POST' }))).then(fetchTasks)
+  Promise.all(running.map(t => fetch(`${API_BASE}/zima_cron/tasks/${t.id}/run`, { method: 'POST' }))).then(fetchTasks)
 }
 
 function scheduleCronNext(task) {
@@ -295,7 +295,7 @@ function parseCronField(expr, min, max, isDow = false) {
 function escapeHtml(str) { return str.replace(/[&<>"]/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[s])) }
 
 async function fetchTasks() {
-  const res = await fetch(`${API_BASE}/zimaos_cron/tasks`)
+  const res = await fetch(`${API_BASE}/zima_cron/tasks`)
   const list = await res.json()
   tasks = list.map(t => ({ ...t, showLogs: false, logs: undefined }))
   renderTasks()
