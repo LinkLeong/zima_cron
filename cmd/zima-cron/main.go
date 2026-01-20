@@ -297,9 +297,11 @@ func runTaskOnce(t *Task) {
 	if len(msg) > 4000 {
 		msg = msg[:4000] + "..."
 	}
+	mu.Lock()
 	t.LastRunAt = finished.UnixMilli()
 	t.LastResult = &Result{Success: success, Message: msg}
 	t.logs = append([]LogEntry{{Time: t.LastRunAt, DurationMs: finished.Sub(start).Milliseconds(), Success: success, Message: msg}}, t.logs...)
+	mu.Unlock()
 }
 
 func isValidCron(expr string) bool { return len(strings.Fields(expr)) == 5 }
