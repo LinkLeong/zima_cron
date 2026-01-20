@@ -291,7 +291,7 @@ func runTaskOnce(t *Task) {
 		if err != nil {
 			msg = err.Error()
 		} else {
-			msg = "执行完成"
+			msg = "Execution completed"
 		}
 	}
 	if len(msg) > 4000 {
