@@ -1,9 +1,10 @@
 module github.com/LinkLeong/zima_cron
 
-go 1.22
+go 1.20
+
+require github.com/IceWhaleTech/CasaOS-Common v0.4.16
 
 require (
-	github.com/IceWhaleTech/CasaOS-Common v0.4.16 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.0.0 // indirect

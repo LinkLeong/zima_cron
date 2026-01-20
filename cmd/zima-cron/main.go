@@ -7,6 +7,7 @@ import (
 	"math"
 	"net"
 	"net/http"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -51,17 +52,23 @@ var (
 )
 
 func main() {
-	svc.Initialize(conf.CommonInfo.RuntimePath)
+	log.Printf("Starting zima-cron backend...")
+	runtimePath := conf.CommonInfo.RuntimePath
+	if envPath := os.Getenv("CASAOS_RUNTIME_PATH"); envPath != "" {
+		runtimePath = envPath
+		log.Printf("Overriding runtime path to: %s", runtimePath)
+	}
+	svc.Initialize(runtimePath)
 	mux := http.NewServeMux()
-	mux.HandleFunc("/zima_cron/tasks", withCORS(tasksHandler))
-	mux.HandleFunc("/zima_cron/tasks/", withCORS(taskActionHandler))
+	mux.HandleFunc("/zima_cron/tasks", withLogging(withCORS(tasksHandler)))
+	mux.HandleFunc("/zima_cron/tasks/", withLogging(withCORS(taskActionHandler)))
 	listener, err := net.Listen("tcp", net.JoinHostPort("127.0.0.1", "0"))
 	if err != nil {
 		log.Fatal(err)
 	}
 	if svc.Gateway != nil {
 		if err := svc.Gateway.CreateRoute(&model.Route{Path: "/zima_cron", Target: "http://" + listener.Addr().String()}); err != nil {
-			log.Fatal(err)
+			log.Printf("Failed to register route: %v", err)
 		}
 	}
 	srv := &http.Server{Handler: mux, ReadHeaderTimeout: 5 * time.Second}
@@ -81,6 +88,15 @@ func withCORS(h http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		h(w, r)
+	}
+}
+
+func withLogging(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		log.Printf("[REQ] %s %s from %s", r.Method, r.URL.Path, r.RemoteAddr)
+		h(w, r)
+		log.Printf("[RES] %s %s took %v", r.Method, r.URL.Path, time.Since(start))
 	}
 }
 
